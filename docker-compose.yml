@@ -1,0 +1,45 @@
+version: '3'
+services:
+  django:
+    build: app
+    command: gunicorn company.wsgi:application --bind 0.0.0.0:8000
+    depends_on:
+      - db
+    env_file:
+      - "./deploy/docker/.env"
+    volumes:
+      - static_volume:/opt/app/static/
+    ports:
+      - "8000:8000"
+
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/configs:/etc/nginx/conf.d:ro
+      - ./nginx/logs:/var/www/logs
+      - static_volume:/var/www/static
+    ports:
+      - "80:80"
+    depends_on:
+      - django
+
+  db:
+    image: postgres:12.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/data:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    env_file:
+      - "./deploy/docker/.env"
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PORT=${DB_PORT}
+
+volumes:
+  postgres_data:
+  static_volume:

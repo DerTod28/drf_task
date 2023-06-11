@@ -2,6 +2,8 @@ THIS_FILE := $(lastword $(MAKEFILE_LIST))
 .PHONY: help build up start down destroy stop restart logs logs-api ps login-timescale login-api db-shell
 help:
 		make -pRrq  -f $(THIS_FILE) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$'
+env-gen:
+		cat deploy/docker/.env.example > deploy/docker/.env
 build:
 		docker-compose -f docker-compose.yml --env-file deploy/docker/.env up --build$(c)
 down:
@@ -18,8 +20,9 @@ db-shell:
 createsuperuser:
 		docker exec drf_task-django-1 python manage.py createsuperuser --no-input
 migrate:
-		docker exec drf_task-django-1 python manage.py makemigrations
 		docker exec drf_task-django-1 python manage.py migrate
+makemigrations:
+		docker exec drf_task-django-1 python manage.py makemigrations
 collectstatic:
 		docker exec drf_task-django-1 python manage.py collectstatic --noinput
 tests:

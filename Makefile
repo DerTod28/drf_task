@@ -22,3 +22,5 @@ migrate:
 		docker exec drf_task-django-1 python manage.py migrate
 collectstatic:
 		docker exec drf_task-django-1 python manage.py collectstatic --noinput
+tests:
+		docker exec drf_task-django-1 python manage.py test

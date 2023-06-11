@@ -1,6 +1,6 @@
+from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 from django.db.models import UniqueConstraint
-from django.contrib.postgres.indexes import GinIndex
 
 
 class Department(models.Model):

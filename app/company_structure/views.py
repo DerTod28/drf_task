@@ -1,5 +1,6 @@
 from rest_framework import mixins, viewsets
 from rest_framework import permissions
+
 from . import serializers
 from .filters import EmployeesFilter
 from .models import Department, Employee
@@ -8,6 +9,7 @@ from .paginator import StandardResultsSetPagination
 
 class DepartmentsViewSet(mixins.RetrieveModelMixin,
                          mixins.ListModelMixin,
+                         mixins.CreateModelMixin,
                          viewsets.GenericViewSet):
     """
         A simple ViewSet for viewing departments.
@@ -30,4 +32,3 @@ class EmployeesViewSet(mixins.RetrieveModelMixin,
     filterset_class = EmployeesFilter
     pagination_class = StandardResultsSetPagination
     permission_classes = [permissions.IsAuthenticated]
-
